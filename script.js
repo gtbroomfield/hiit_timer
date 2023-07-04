@@ -3,8 +3,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const timerElement = document.getElementById('timer');
     const messageElement = document.getElementById('message');
     const setElement = document.getElementById('currentSet');
-    const intervalElement = document.getElementById('currentInterval');
     const exerciseElement = document.getElementById('currentExercise');
+    const workoutCountElement = document.getElementById('workoutCount');
 
     startButton.addEventListener('click', function() {
         const numExercises = parseInt(document.getElementById('numExercises').value);
@@ -42,13 +42,14 @@ window.addEventListener('DOMContentLoaded', function() {
     function startWorkout(workoutList, numSets, workoutTime, restTime) {
         var currentSet = 1;
         var currentExercise = 0;
-        var currentInterval = 'Workout';
+
+        var totalSets = numSets;
+        var totalExercises = workoutList.length;
 
         timerElement.textContent = "";
-        setElement.textContent = `Set ${currentSet}`;
-        intervalElement.textContent = currentInterval;
-        exerciseElement.textContent = workoutList[currentExercise];
-        messageElement.textContent = `Exercise ${currentExercise + 1} of ${workoutList.length}`;
+        setElement.textContent = `Set ${currentSet} of ${totalSets}`;
+        updateExerciseText(currentExercise);
+        workoutCountElement.textContent = `Exercise ${currentExercise + 1} of ${totalExercises}`;
 
         function performExercise() {
             if (currentExercise >= workoutList.length) {
@@ -58,14 +59,13 @@ window.addEventListener('DOMContentLoaded', function() {
                     messageElement.textContent = "Workout complete!";
                     return;
                 }
-                setElement.textContent = `Set ${currentSet}`;
+                setElement.textContent = `Set ${currentSet} of ${totalSets}`;
             }
 
             var exercise = workoutList[currentExercise];
             var timeLeft = workoutTime;
             timerElement.textContent = formatTime(timeLeft);
-            intervalElement.textContent = 'Workout';
-            exerciseElement.textContent = exercise;
+            updateExerciseText(currentExercise);
 
             var countdown = setInterval(function() {
                 timeLeft--;
@@ -74,7 +74,6 @@ window.addEventListener('DOMContentLoaded', function() {
                     clearInterval(countdown);
                     timerElement.textContent = "";
                     messageElement.textContent = "Rest";
-                    intervalElement.textContent = 'Rest';
                     performRest(restTime);
                 }
             }, 1000);
@@ -92,7 +91,7 @@ window.addEventListener('DOMContentLoaded', function() {
                     clearInterval(countdown);
                     timerElement.textContent = "";
                     currentExercise++;
-                    messageElement.textContent = `Exercise ${currentExercise + 1} of ${workoutList.length}`;
+                    workoutCountElement.textContent = `Exercise ${currentExercise + 1} of ${totalExercises}`;
                     performExercise();
                 }
             }, 1000);
@@ -106,6 +105,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
         function padZero(value) {
             return value < 10 ? `0${value}` : value;
+        }
+
+        function updateExerciseText(index) {
+            exerciseElement.textContent = workoutList[index];
         }
 
         performExercise();
