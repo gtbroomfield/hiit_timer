@@ -5,6 +5,12 @@ window.addEventListener('DOMContentLoaded', function() {
     const setElement = document.getElementById('currentSet');
     const exerciseElement = document.getElementById('currentExercise');
     const workoutCountElement = document.getElementById('workoutCount');
+    const overallDurationElement = document.getElementById('overallDuration');
+    const remainingDurationElement = document.getElementById('remainingDuration');
+
+    let startTime; // Variable to store the start time of the workout
+    let totalTime = 0; // Variable to store the total duration of the workout
+    let remainingTime = 0; // Variable to store the remaining duration of the workout
 
     startButton.addEventListener('click', function() {
         const numExercises = parseInt(document.getElementById('numExercises').value);
@@ -70,6 +76,8 @@ window.addEventListener('DOMContentLoaded', function() {
             var countdown = setInterval(function() {
                 timeLeft--;
                 timerElement.textContent = formatTime(timeLeft);
+                remainingTime--;
+                remainingDurationElement.textContent = formatTime(remainingTime);
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     timerElement.textContent = "";
@@ -87,6 +95,8 @@ window.addEventListener('DOMContentLoaded', function() {
             var countdown = setInterval(function() {
                 timeLeft--;
                 timerElement.textContent = formatTime(timeLeft);
+                remainingTime--;
+                remainingDurationElement.textContent = formatTime(remainingTime);
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     timerElement.textContent = "";
@@ -111,6 +121,15 @@ window.addEventListener('DOMContentLoaded', function() {
             exerciseElement.textContent = workoutList[index];
         }
 
+        function startTimer() {
+            startTime = Date.now();
+            totalTime = workoutTime * totalSets * totalExercises + restTime * (totalExercises - 1);
+            remainingTime = totalTime;
+            overallDurationElement.textContent = formatTime(totalTime);
+            remainingDurationElement.textContent = formatTime(remainingTime);
+        }
+
+        startTimer();
         performExercise();
     }
 });
